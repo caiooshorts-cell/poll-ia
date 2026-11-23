@@ -22,6 +22,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force package | Out-Null
           Copy-Item dist/DevPilot.exe package/DevPilot.exe
+          Copy-Item INICIAR_DEVPILOT.bat package/INICIAR_DEVPILOT.bat
           @'
           @echo off
           title Desinstalar DevPilot
@@ -36,9 +37,9 @@ jobs:
           @'
           DEV PILOT PC
 
-          1. Execute DevPilot.exe para abrir a IA.
-          2. Execute INSTALAR_IA_LOCAL.bat uma vez para baixar o modelo local.
-          3. Para remover o aplicativo, execute Desinstalar.bat.
+          Para usar, clique somente em INICIAR_DEVPILOT.bat.
+          Ele instala o motor local, baixa a IA uma unica vez e abre o aplicativo.
+          Para remover o aplicativo, execute Desinstalar.bat.
           '@ | Set-Content package/LEIA-ME.txt -Encoding utf8
       - name: Salvar ZIP do DevPilot
         uses: actions/upload-artifact@v4
