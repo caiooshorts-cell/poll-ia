@@ -1,4 +1,4 @@
-name: Criar executável Windows
+name: Criar pacote Windows
 
 on:
   workflow_dispatch:
@@ -17,8 +17,33 @@ jobs:
         run: pip install -r requirements-build.txt
       - name: Gerar DevPilot.exe
         run: pyinstaller --noconfirm --clean --onefile --windowed --name DevPilot app.py
-      - name: Salvar executável
+      - name: Montar pacote portátil
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package | Out-Null
+          Copy-Item dist/DevPilot.exe package/DevPilot.exe
+          @'
+          @echo off
+          title Desinstalar DevPilot
+          echo.
+          echo Feche o DevPilot antes de continuar.
+          pause
+          cd /d "%TEMP%"
+          rmdir /s /q "%~dp0"
+          echo DevPilot removido deste computador.
+          pause
+          '@ | Set-Content package/Desinstalar.bat -Encoding ascii
+          @'
+          DEV PILOT PC
+
+          1. Execute DevPilot.exe para abrir a IA.
+          2. Execute INSTALAR_IA_LOCAL.bat uma vez para baixar o modelo local.
+          3. Para remover o aplicativo, execute Desinstalar.bat.
+          '@ | Set-Content package/LEIA-ME.txt -Encoding utf8
+      - name: Salvar ZIP do DevPilot
         uses: actions/upload-artifact@v4
         with:
-          name: DevPilot-Windows
-          path: dist/DevPilot.exe
+          name: DevPilot-PC
+          path: package
+          if-no-files-found: error
+          retention-days: 30
