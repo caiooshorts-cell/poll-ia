@@ -1,0 +1,24 @@
+name: Criar executável Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Instalar empacotador
+        run: pip install -r requirements-build.txt
+      - name: Gerar DevPilot.exe
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name DevPilot app.py
+      - name: Salvar executável
+        uses: actions/upload-artifact@v4
+        with:
+          name: DevPilot-Windows
+          path: dist/DevPilot.exe
